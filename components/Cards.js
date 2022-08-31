@@ -11,10 +11,9 @@ export default function Card (props){
             width={100}
             height={100}
             />
-            <div style={{backgroundColor: 'hsl(264, 64%, 52%)'}} className='relative bottom-10'>
+            <div style={{backgroundColor: 'hsl(264, 64%, 52%)'}} className=' text-white relative bottom-10'>
                 <h2>{props.timezone}</h2>
                 <p>{props.datatime}</p>
-                <p>Otras regiones</p>
             </div>
         </div>
         </>
