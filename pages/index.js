@@ -4,20 +4,18 @@ import Cards from '../components/Cards'
 export default function Home(data) {
   const [selectedValue, setValue]= useState('');
   const[newCity, setCity]=useState({});
-  const valueSelect = (e) =>{
-    setValue(e.target.value);
-    getDataFromSelect();
-    data.data.push(newCity);
-    console.log(data.data)
-
+  const setValueTo = (e) =>{
+    setValue(e.target.value)
   }
-  const getDataFromSelect = async (e) =>{
+  // En esta función utilizo el fetch normal para llamar a la API
+  async function getDataFormSelect (){
     const url =`http://worldtimeapi.org/api/timezone/Europe/${selectedValue}`
     
-    const response = await fetch (url);
-    const goodResponse = await response.json();
-    setCity(goodResponse);
-
+    const fetchPromise = await fetch (url).then((response)=>{ response.json()})
+   setCity(fetchPromise);
+    // const goodResponse = await response.json().then
+    // setCity(goodResponse)
+    // data.data.push(newCity);
   }
   return (
     <>
@@ -25,7 +23,7 @@ export default function Home(data) {
         <div className="flex justify-center">
           <form className="mb-3 xl:w-96">
             <label>Do you miss any place?</label>
-            <select onChange={valueSelect} className="form-select form-select-sm
+            <select onChange={setValueTo} className="form-select form-select-sm
             appearance-none
             block
             w-full
@@ -41,10 +39,11 @@ export default function Home(data) {
             ease-in-out
             m-0
             focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label=".form-select-sm example">
-              <option defaultValue=''>Search a zone</option>
-              <option defaultValue="1">Amsterdam</option>
-              <option defaultValue="2">Ulyanovsk</option>
-              <option defaultValue="3">Stockholm</option>
+              {/* Que las opciones entren por el fetch */}
+              <option>Search a zone</option>
+              <option defaultValue='Amsterdam'>Amsterdam</option>
+              <option defaultValue='Ulyanovsk'>Ulyanovsk</option>
+              <option defaultValue='Stockholm'>Stockholm</option>
             </select>
       </form>
   </div>
@@ -57,7 +56,7 @@ export default function Home(data) {
           <Cards key={data} timezone={country.timezone} datatime={country.datetime}/>
           </div>
         )}
-         <button style={{color:'white', marginLeft:'100px', backgroundColor:'red'}} onClick={()=>{console.log(data, selectedValue)}}>Horas</button>
+         <button style={{color:'white', marginLeft:'100px', backgroundColor:'red'}} onClick={()=>{console.log(data, selectedValue, newCity)}}>Horas</button>
     </div>
     </>
   )
@@ -77,6 +76,7 @@ export async function getStaticProps() {
          const element = arrayOfCitys[index];
          let continent = element.continent;
          let area = element.ciudad;
+   // En esta función utilizo axios para llamar a API
   const url = `http://worldtimeapi.org/api/timezone/${continent}/${area}`
   const response =await axios.get(url)
   const responseData= response.data;
