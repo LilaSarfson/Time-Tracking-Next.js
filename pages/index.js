@@ -16,13 +16,14 @@ export default function Home(data) {
     }
   }
   useEffect(()=>{
-    getDataFromSelect()
+    getDataFormSelect()
   },[selectedValue])
+
   useEffect(()=>{
     getDataCity();
   },[])
 
-  const getDataFromSelect = ()=>{
+  const getDataFormSelect = ()=>{
     const url =`http://worldtimeapi.org/api/timezone/${selectedValue}`
     const response = fetch (url);
     response
@@ -40,47 +41,44 @@ export default function Home(data) {
   }
   return (
     <>
-      <div className='flex flex-row flex-wrap gap-52'>
-        <div className="flex justify-center">
-          <form className="mb-3 xl:w-96">
-            <label>Do you miss any place?</label>
-            <select onChange={setValueTo} className="form-select form-select-sm
-            appearance-none
-            block
-            w-full
-            px-2
-            py-1
-            text-sm
-            font-normal
-            text-gray-700
-            bg-white bg-clip-padding bg-no-repeat
-            border border-solid border-gray-300
-            rounded
-            transition
-            ease-in-out
-            m-0
-            focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label=".form-select-sm example">
-              <option>Search a zone</option>
-             {
-              arrayOfCitys.map((citys, index)=>
-                  <option key={index} defaultValue={citys}>{citys}</option>
-                )
-              
-             }
-            </select>
-      </form>
-  </div>
-
-
-
-        {
-        data.data.map((country) => 
-          <div>
-          <Cards key={data} timezone={country.timezone} datatime={country.datetime}/>
-          </div>
-        )}
-         <button style={{color:'white', marginLeft:'100px', backgroundColor:'red'}} onClick={()=>{console.log(data, arrayOfCitys)}}>Horas</button>
-    </div>
+      <div className=' flex flex-col gap-32'>
+        <h1 className='text-5xl font-mono	font-medium	tracking-tighter text-center	'>Europe Time Tracking</h1>
+            <form className="flex flex-col gap-5 mb-3 xl:w-96 self-center	">
+              <p className='text-center text-lg font-bold	uppercase	'>Do you miss any place?</p>
+              <select onChange={setValueTo} className="form-select form-select-sm
+              appearance-none
+              block
+              w-full
+              px-2
+              py-1
+              text-base
+              font-normal
+              text-gray-700
+              bg-white bg-clip-padding bg-no-repeat
+              border border-solid border-gray-300
+              rounded
+              transition
+              ease-in-out
+              m-0
+              focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label=".form-select-sm example">
+               {
+                arrayOfCitys.map((citys, index)=>
+                    <option key={index} defaultValue={citys}>{citys}</option>
+                  )
+        
+               }
+              </select>
+        </form>
+        <div className='flex flex-row flex-wrap justify-center gap-10'>
+          {
+          data.data.map((country, index) =>
+            <div>
+            <Cards key={index} timezone={country.timezone} datatime={country.datetime}/>
+            </div>
+          )}
+        </div>
+           <button style={{color:'white', marginLeft:'100px', backgroundColor:'red'}} onClick={()=>{console.log(data, arrayOfCitys)}}>Horas</button>
+      </div>
     </>
   )
 }
