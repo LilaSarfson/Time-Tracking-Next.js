@@ -1,34 +1,42 @@
+import { useState } from 'react'
+import axios from 'axios'
 import Cards from '../components/Cards'
-export default function Home(horas) {
-  const arrayOfCitys = [
-    {Pais:'Argentina',
-    Ciudad:'Buenos-Aires'},
-    {Pais:'France',
-    Ciudad:'Paris'},
-    {Pais:'Spain',
-    Ciudad:'Madrid'}
-  ]
-  const getHoras = ()=>{
-    console.log(horas)
-    console.log(horas.horas.datetime)
-  }
+export default function Home(data) {
   return (
     <>
-      <div className='flex flex-row flex-wrap gap-96'>
+      <div className='flex flex-row flex-wrap gap-52'>
+        <p>Hola</p>
         {
-        arrayOfCitys.map((country) => 
-        <div>
-          <Cards timezone={horas.horas.timezone} datatime={horas.horas.datetime}/>
-          <button style={{color:'white'}} onClick={getHoras}>Horas</button>
-        </div>
-         )}
+        data.data.map((country) => 
+          <div>
+          <Cards key={country.length} timezone={country.timezone} datatime={country.datetime}/>
+          </div>
+        )}
+         <button style={{color:'white', marginLeft:'100px', backgroundColor:'red'}} onClick={()=>{console.log(data)}}>Horas</button>
     </div>
     </>
   )
 }
-export async function getStaticProps(){
-  const response = await fetch ('http://worldtimeapi.org/api/timezone/America/Argentina/Salta')
-  const horas= await response.json();
-
-  return {props: {horas}}
+export async function getStaticProps() {
+  let arrayOfData=[];
+  let arrayOfCitys = [
+    {continent: 'Europe',
+   ciudad:'Oslo'},
+   {continent: 'Europe',
+   ciudad:'Paris'},
+   {continent: 'Europe',
+   ciudad:'Istanbul'}
+    ]; 
+    for (let index = 0; index < arrayOfCitys.length; index++) {
+         
+         const element = arrayOfCitys[index];
+         let continent = element.continent;
+         let area = element.ciudad;
+  const url = `http://worldtimeapi.org/api/timezone/${continent}/${area}`
+  const response =await axios.get(url)
+  const responseData= response.data;
+  arrayOfData = [...arrayOfData, responseData]
+  } 
+return { props: { data: arrayOfData} };
 }
+
