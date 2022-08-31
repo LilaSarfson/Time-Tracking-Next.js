@@ -1,21 +1,42 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Cards from '../components/Cards'
 export default function Home(data) {
   const [selectedValue, setValue]= useState('');
   const[newCity, setCity]=useState({});
+  const[arrayOfCitys, setArrayCitys]=useState([]);
   const setValueTo = (e) =>{
-    setValue(e.target.value)
+    setValue(e.target.value);
+    const isRepeat = data.data.some((city) => city.timezone==newCity.timezone)
+    if(newCity.length!== 46 && !isRepeat){
+      data.data.push(newCity)
+    }
+    else if (isRepeat){
+      alert(`City selected is already consulted ${selectedValue}`)
+    }
   }
-  // En esta función utilizo el fetch normal para llamar a la API
-  async function getDataFormSelect (){
-    const url =`http://worldtimeapi.org/api/timezone/Europe/${selectedValue}`
+  useEffect(()=>{
+    getDataFromSelect()
+  },[selectedValue])
+  useEffect(()=>{
+    getDataCity();
+  },[])
+
+  const getDataFromSelect = ()=>{
+    const url =`http://worldtimeapi.org/api/timezone/${selectedValue}`
+    const response = fetch (url);
+    response
+    .then(datos => datos.json())
+    .then(lectura =>{ setCity(lectura)})
     
-    const fetchPromise = await fetch (url).then((response)=>{ response.json()})
-   setCity(fetchPromise);
-    // const goodResponse = await response.json().then
-    // setCity(goodResponse)
-    // data.data.push(newCity);
+  }
+  const getDataCity = ()=>{
+    const url ='http://worldtimeapi.org/api/timezone/Europe'
+    const response = fetch (url);
+    response
+    .then(datos => datos.json())
+    .then(lectura =>{ setArrayCitys((lectura))})
+    
   }
   return (
     <>
@@ -39,11 +60,13 @@ export default function Home(data) {
             ease-in-out
             m-0
             focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label=".form-select-sm example">
-              {/* Que las opciones entren por el fetch */}
               <option>Search a zone</option>
-              <option defaultValue='Amsterdam'>Amsterdam</option>
-              <option defaultValue='Ulyanovsk'>Ulyanovsk</option>
-              <option defaultValue='Stockholm'>Stockholm</option>
+             {
+              arrayOfCitys.map((citys, index)=>
+                  <option key={index} defaultValue={citys}>{citys}</option>
+                )
+              
+             }
             </select>
       </form>
   </div>
@@ -56,7 +79,7 @@ export default function Home(data) {
           <Cards key={data} timezone={country.timezone} datatime={country.datetime}/>
           </div>
         )}
-         <button style={{color:'white', marginLeft:'100px', backgroundColor:'red'}} onClick={()=>{console.log(data, selectedValue, newCity)}}>Horas</button>
+         <button style={{color:'white', marginLeft:'100px', backgroundColor:'red'}} onClick={()=>{console.log(data, arrayOfCitys)}}>Horas</button>
     </div>
     </>
   )
