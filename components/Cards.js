@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import playPic from '../public/wall-clock.png'
+import watchPic from '../public/wall-clock.png'
 
 export default function Card (props){
     return(
@@ -7,8 +7,8 @@ export default function Card (props){
         <div style={{backgroundColor: 'white'}} className='w-4/4 justify-items-center p-3 border-solid border-black rounded relative '>
             <Image 
             objectFit="cover"
-            src={playPic}
-            alt='aun n se'
+            src={watchPic}
+            alt='watch'
             width={100}
             height={100}
             />
