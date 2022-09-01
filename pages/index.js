@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Cards from '../components/Cards'
+import SearchBar from '../components/SearchBar';
 export default function Home(data) {
   const [selectedValue, setValue]= useState('');
   const[newCity, setCity]=useState({});
@@ -69,6 +70,7 @@ export default function Home(data) {
                }
               </select>
         </form>
+        <SearchBar/>
         <div className='flex flex-row flex-wrap justify-center gap-10'>
           {
           data.data.map((country, index) =>
