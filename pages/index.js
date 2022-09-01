@@ -6,6 +6,9 @@ export default function Home(data) {
   const [selectedValue, setValue]= useState('');
   const[newCity, setCity]=useState({});
   const[arrayOfCitys, setArrayCitys]=useState([]);
+  const [inputValue, setInputValue]=useState('');
+  const [filteredData, setFilteredData]=useState([]);
+  const [searchActive, setSearchActive]=useState(false)
   const setValueTo = (e) =>{
     setValue(e.target.value);
     const isRepeat = data.data.some((city) => city.timezone==newCity.timezone)
@@ -40,6 +43,18 @@ export default function Home(data) {
     .then(lectura =>{ setArrayCitys((lectura))})
     
   }
+  const searchOnCityArray = (e)=> {
+    setInputValue(e.target.value)
+    setSearchActive(true)
+    let dataFiltered = data.data.filter((city)=> city.timezone.includes('Europe/'+capitalize(inputValue)));
+    setFilteredData(dataFiltered);
+    console.log(inputValue)
+  }
+  const capitalize = (s) =>
+    {
+      if(s!=='')
+    return s[0].toUpperCase() + s.slice(1);
+    }
   return (
     <>
       <div className=' flex flex-col gap-32'>
@@ -70,16 +85,33 @@ export default function Home(data) {
                }
               </select>
         </form>
-        <SearchBar/>
+        <SearchBar
+        searchOnCityArray={searchOnCityArray}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        />
         <div className='flex flex-row flex-wrap justify-center gap-10'>
+          
           {
-          data.data.map((country, index) =>
+            inputValue==''?
+            data.data.map((country, index) =>
             <div>
             <Cards key={index} timezone={country.timezone} datatime={country.datetime}/>
-            </div>
-          )}
+            </div>)
+            :
+            searchActive ? 
+            filteredData.map((country, index)=>  
+            <div>
+            <Cards key={index} timezone={country.timezone} datatime={country.datetime}/>
+            </div>)
+            :
+            data.data.map((country, index) =>
+            <div>
+            <Cards key={index} timezone={country.timezone} datatime={country.datetime}/>
+            </div>)
+          }
         </div>
-           <button style={{color:'white', marginLeft:'100px', backgroundColor:'red'}} onClick={()=>{console.log(data, arrayOfCitys)}}>Horas</button>
+           <button style={{color:'white', marginLeft:'100px', backgroundColor:'red'}} onClick={()=>setSearchActive(false)}>Limpiar filtro</button>
       </div>
     </>
   )
@@ -91,6 +123,8 @@ export async function getStaticProps() {
    ciudad:'Oslo'},
    {continent: 'Europe',
    ciudad:'Paris'},
+   {continent: 'Europe',
+   ciudad:'Prague'},
    {continent: 'Europe',
    ciudad:'Istanbul'}
     ]; 
